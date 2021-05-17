@@ -1,0 +1,34 @@
+CREATE DATABASE  tienda_acme_iniciales;
+
+USE tienda_acme_iniciales;
+
+CREATE TABLE usuarios (
+usuario varchar (30) NOT NULL PRIMARY KEY,
+rol int NOT NULL,
+estado int NOT NULL,
+nombre_usuario varchar (150)NOT NULL,
+datos_complementarios varchar (150)NOT NULL ,
+fecha_actualizacion timestamp 
+) ENGINE=InnoDB;
+
+CREATE TABLE productos (
+sku varchar (50) NOT NULL PRIMARY KEY,
+nombre_producto varchar (50) NOT NULL,
+descripcion varchar (4000) NOT NULL,
+precio_unitario float NOT NULL DEFAULT 0.0,
+existencia int NOT NULL DEFAULT 0
+)ENGINE=InnoDB;
+
+DROP TABLE usuarios;
+
+INSERT INTO usuarios (usuario,rol,estado,nombre_usuario,datos_complementarios,fecha_actualizacion)
+VALUES 
+("00052D","59","81","Daniel Casares","Joven estudiante","2021-05-16 08:08:02"),
+("05041E","316","98","Evelyn Jasmin","Estudiante  egresada","2015-05-04 18:21:12"),
+("07855P","946","80","Pedro Perez","Se juvilara","2019-10-12 06:30:51");
+
+INSERT INTO productos (sku, nombre_producto,descripcion,precio_unitario,existencia)
+VALUES
+("4585H8","Elvive","Shampoo para cabello", "68.50","14"),
+("95A58I","Pinol","Limpiador para pisos","20","10"),
+("77A489","Roma","Jabón para trastes","15","2");
