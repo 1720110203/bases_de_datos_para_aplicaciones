@@ -1,0 +1,113 @@
+CREATE DATABASE  tienda_acme_iniciales;
+
+USE tienda_acme_iniciales;
+
+CREATE TABLE usuarios (
+usuario varchar (30) NOT NULL PRIMARY KEY,
+rol int NOT NULL,
+estado int NOT NULL,
+nombre_usuario varchar (150)NOT NULL,
+datos_complementarios varchar (150)NOT NULL ,
+fecha_actualizacion timestamp 
+) ENGINE=InnoDB;
+
+CREATE TABLE productos (
+sku varchar (50) NOT NULL PRIMARY KEY,
+nombre_producto varchar (50) NOT NULL,
+descripcion varchar (4000) NOT NULL,
+precio_unitario float NOT NULL DEFAULT 0.0,
+existencia int NOT NULL DEFAULT 0
+)ENGINE=InnoDB;
+
+ CREATE TABLE clientes (
+ id_cliente int NOT NULL PRIMARY KEY AUTO_INCREMENT comment 'id interno del cliente',
+ primer_apellido varchar (50) NOT NULL comment 'primer apellido del cliente',
+ segundo_apellido varchar (50) NOT NULL comment 'segundo apellido del cliente',
+ nombres varchar (50) NOT NULL comment 'nombre',
+ telefono varchar (11) NOT NULL comment 'numero del cliente solo 10 digitos',
+ email varchar (45) NOT NULL comment 'email del cliente',
+ id_direccion int not null, foreign key (id_direccion) references direcciones(id_direccion),
+ fecha date NOT NULL comment 'solo la fehca año, mes y dia'
+ )ENGINE=InnoDB;
+
+ DROP TABLE clientes;
+
+
+CREATE TABLE direcciones (
+id_direccion int NOT NULL PRIMARY KEY AUTO_INCREMENT comment 'id de la direccion',
+calle varchar(50) NOT NULL comment 'calle ',
+colonia varchar(30) NOT NULL comment 'nombre colonia',
+cp varchar(7) NOT NULL comment 'codigo postal',
+municipio varchar(30) NOT NULL comment 'municipio',
+estado varchar(45) NOT NULL comment 'estado de vivienda',
+pais varchar(35) NOT NULL comment 'pais',
+fecha_actualizacion datetime comment 'fecha de actualizacion'
+)ENGINE=InnoDB;
+'se agregara un numero exterior y uno interior en la tabla direcciones'
+ALTER TABLE direcciones 
+ADD no_exterior varchar (6) NOT NULL DEFAULT 0 comment 'numero exterior';
+ALTER TABLE direcciones 
+ADD no_interior varchar (6) NOT NULL DEFAULT 0 comment 'numero interior';
+
+
+DROP TABLE usuarios;
+
+truncate TABLE usuarios ; 
+
+'se creara una nueva tabla de proveedores'
+CREATE TABLE  proveedor (
+id_proveedor int NOT NULL PRIMARY KEY,
+proveedor varchar (30) NOT NULL, 
+nombre_contacto varchar (30) NOT NULL,
+telefono_contacto int NOT NULL,
+email_contacto varchar (50) NOT NULL,
+fecha_actualizacion date
+)ENGINE=InnoDB;
+
+ALTER TABLE proveedor 
+ADD fecha_actualizacion date;
+
+
+'Creare una nueva tabla de direcciones y proveedores'
+CREATE TABLE direcciones_proveedores(
+id_direccion int NOT NULL PRIMARY KEY,
+calle varchar (50) NOT NULL,
+colonia varchar (40) NOT NULL,
+CP int NOT NULL,
+municipio varchar (30) NOT NULL,
+estado varchar (30) NOT NULL, 
+pais varchar (40) NOT NULL,
+no_interior varchar (6) NOT NULL DEFAULT 0,
+no_exterior varchar (6) NOT NULL DEFAULT 0,
+id_proveedor int not null, foreign key (id_proveedor) references proveedor(id_proveedor)  comment 'id_direccion del proveedor',
+)ENGINE=InnoDB;
+
+'//////////////////////////////////////////////////////////////////'
+
+'creare una tabla de ventas'
+CREATE TABLE ventas (
+id_venta int NOT NULL PRIMARY KEY AUTO_INCREMENT  comment 'llave primaria de ventas',
+fecha_venta date comment 'fecha de realizacion de venta',
+total_venta float NOT NULL DEFAULT 0.0 comment 'total de la venta',
+id_cliente int NOT NULL, foreign KEY (id_cliente) REFERENCES clientes(id_cliente) 
+)ENGINE=InnoDB;
+
+'creare una tabla llamada detalles venta'
+CREATE TABLE detalles_venta (
+id_detalle_venta int NOT NULL PRIMARY KEY AUTO_INCREMENT, 
+id_venta int NOT NULL, FOREIGN KEY (id_venta) REFERENCES ventas(id_venta),
+sku varchar (50) NOT NULL, FOREIGN KEY (sku)  REFERENCES productos(sku),
+cantidad_producto int NOT NULL, 
+precio float NOT NULL DEFAULT 0.0,
+total_x_producto float GENERATED ALWAYS AS (cantidad_producto * precio)
+)ENGINE=InnoDB;
+
+SELECT * FROM clientes;
+SELECT * FROM ventas;
+'se insertara 4 datos a tabla ventas'
+
+INSERT INTO ventas (id_venta,fecha_venta,total_venta,id_cliente) VALUES 
+("0001","20-10-20","115.50","102"),("0002","15-08-20","270.90","108"),("0003","04-05-20","375.10","193"),
+("0004","01-01-21","524.00","119")
+
+''
