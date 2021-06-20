@@ -1,0 +1,114 @@
+CREATE DATABASE  tienda_acme_iniciales;
+
+USE tienda_acme_iniciales;
+
+CREATE TABLE usuarios (
+usuario varchar (30) NOT NULL PRIMARY KEY,
+rol int NOT NULL,
+estado int NOT NULL,
+nombre_usuario varchar (150)NOT NULL,
+datos_complementarios varchar (150)NOT NULL ,
+fecha_actualizacion timestamp 
+) ENGINE=InnoDB;
+
+CREATE TABLE productos (
+sku varchar (50) NOT NULL PRIMARY KEY,
+nombre_producto varchar (50) NOT NULL,
+descripcion varchar (4000) NOT NULL,
+precio_unitario float NOT NULL DEFAULT 0.0,
+existencia int NOT NULL DEFAULT 0
+)ENGINE=InnoDB;
+
+ CREATE TABLE clientes (
+ id_cliente int NOT NULL PRIMARY KEY AUTO_INCREMENT comment 'id interno del cliente',
+ primer_apellido varchar (50) NOT NULL comment 'primer apellido del cliente',
+ segundo_apellido varchar (50) NOT NULL comment 'segundo apellido del cliente',
+ nombres varchar (50) NOT NULL comment 'nombre',
+ telefono varchar (11) NOT NULL comment 'numero del cliente solo 10 digitos',
+ email varchar (45) NOT NULL comment 'email del cliente',
+ id_direccion int not null, foreign key (id_direccion) references direcciones(id_direccion),
+ fecha date NOT NULL comment 'solo la fehca año, mes y dia'
+ )ENGINE=InnoDB;
+
+ DROP TABLE clientes;
+
+
+CREATE TABLE direcciones (
+id_direccion int NOT NULL PRIMARY KEY AUTO_INCREMENT comment 'id de la direccion',
+calle varchar(50) NOT NULL comment 'calle ',
+colonia varchar(30) NOT NULL comment 'nombre colonia',
+cp varchar(7) NOT NULL comment 'codigo postal',
+municipio varchar(30) NOT NULL comment 'municipio',
+estado varchar(45) NOT NULL comment 'estado de vivienda',
+pais varchar(35) NOT NULL comment 'pais',
+fecha_actualizacion datetime comment 'fecha de actualizacion'
+)ENGINE=InnoDB;
+'se agregara un numero exterior y uno interior en la tabla direcciones'
+ALTER TABLE direcciones 
+ADD no_exterior varchar (6) NOT NULL DEFAULT 0 comment 'numero exterior';
+ALTER TABLE direcciones 
+ADD no_interior varchar (6) NOT NULL DEFAULT 0 comment 'numero interior';
+
+
+DROP TABLE usuarios;
+
+truncate TABLE usuarios ; 
+
+'se creara una nueva tabla de proveedores'
+CREATE TABLE  proveedor (
+id_proveedor int NOT NULL PRIMARY KEY,
+proveedor varchar (30) NOT NULL, 
+nombre_contacto varchar (30) NOT NULL,
+telefono_contacto int NOT NULL,
+email_contacto varchar (50) NOT NULL,
+fecha_actualizacion date
+)ENGINE=InnoDB;
+
+ALTER TABLE proveedor 
+ADD fecha_actualizacion date;
+'Insertare 5 registros en la tabla '
+
+INSERT INTO proveedor (id_proveedor, proveedor, nombre_contacto, telefono_contacto, email_contacto, fecha_actualizacion) VALUES
+("58616","Sabritas","Erick Canales","553589689","sabritas@gmail.com.mx","05-20-21"),
+("93507","Bimbo","Sonia Marquez","551702692","bimbomx@gmail.com.mx","04-10-21"),
+("62054","Costeña","Fernando Orue","559626450","costeña@gmail.com.mx","06-03-21"),
+("59823","Cloralex","Daniela Perez","552087193","cloralex@gmail.com.mx","31-10-20"),
+("85231","Zote","Jimena Molina","893641253","zotemex@gmail.com.mx","26-08-20");
+
+'Creare una nueva tabla de direcciones y proveedores'
+CREATE TABLE direcciones_proveedores(
+id_direccion int NOT NULL PRIMARY KEY,
+calle varchar (50) NOT NULL,
+colonia varchar (40) NOT NULL,
+CP int NOT NULL,
+municipio varchar (30) NOT NULL,
+estado varchar (30) NOT NULL, 
+pais varchar (40) NOT NULL,
+no_interior varchar (6) NOT NULL DEFAULT 0,
+no_exterior varchar (6) NOT NULL DEFAULT 0,
+id_proveedor int not null, foreign key (id_proveedor) references proveedor(id_proveedor)  comment 'id_direccion del proveedor',
+)ENGINE=InnoDB;
+
+'Insertaremos 10 registros'
+
+INSERT INTO direcciones_proveedores (id_direccion,calle,colonia,CP,municipio,estado,pais,no_interior,no_exterior,id_proveedor) VALUES 
+("3363","Montes de oca","Morelos","43630","Ecatepec","Mexico","Mexico","106852","269781","58616"),
+("9853","Agustin Melgar","Vicente Guerrero","43633","Tulancingo","MHidalgo","Mexico","122982","585223","58616"),
+("5204","Miguel Negrete","Guadalupe","43639","Ixmiquilpan","Hidalgo","Mexico","852123","201536","93507"),
+("7530","Vicente Guerrero","Centro","53978","Ecatepec","Mexico","Mexico","368024","107139","93507"),
+("2036","Wall Street","NY","22039","NY","New York","Estados Unidos","039850","187520","62054"),
+("2084","5th. Avenue","NY","98205","NY","New York","Estados Unidos","302587","846270","62054"),
+("7803","5th. Avenue","NY","98205","NY","New York","Estados Unidos","302587","846270","59823"),
+("2487", "Hollywood Blvd","BCS","52068","BCS", "Baja California","Estados Unidos","120784","896475","59823"),
+("7536", "2 Bloor Street East", "Suite", "1201"," Ontario","Toronto","Canada","876245","026947","85231"),
+("3658","Schulhausstrasse","Saas-Grund","16","Saas-Grund","Saas-Grund","Suiza","178540","087452","85231");
+
+'vista de nombre proveedores_direcciones_proveedores que muestre todos los campos de ambas tablas '
+
+SELECT  proveedor.proveedor, proveedor.nombre_contacto, proveedor.telefono_contacto,
+proveedor.email_contacto, proveedor.fecha_actualizacion,direcciones_proveedores.calle,
+direcciones_proveedores.colonia,direcciones_proveedores.CP,direcciones_proveedores.municipio,
+direcciones_proveedores.estado,direcciones_proveedores.pais,direcciones_proveedores.no_interior,direcciones_proveedores.no_exterior,
+direcciones_proveedores.id_proveedor
+FROM proveedor, direcciones_proveedores
+WHERE proveedor.id_proveedor AND  direcciones_proveedores.id_direccion;
